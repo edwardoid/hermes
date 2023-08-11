@@ -19,7 +19,8 @@
 #ifndef HM_IO_H
 #define HM_IO_H
 
-#include <Config.h>
+#include <hermes/Config.h>
+#include <hermes/Types.h>
 
 namespace hermes
 {
@@ -45,53 +46,60 @@ namespace hermes
 		 * Drop data available.
 		 * @see available()
 		 */
-		virtual void flush() const = 0;
+		virtual void flush() = 0;
 
 		/**
-		 * @return true if There is data to be read.
+		 * @return Bytes available to read.
 		 * @see read()
 		 **/
-		virtual bool available() const = 0;
+		virtual buffer_length_t available() const = 0;
+
+		/**
+		 * Blocks while there is any data to read
+		 * @param length Bytes needed to be available after block
+		 * @return Bytes available to read
+		*/
+		virtual buffer_length_t wait(buffer_length_t length) = 0;
 
 		/**
 		 * @param buf Byte buffer to me transmitted.
 		 * @param length Buffer length.
 		 * @return Returns how many bytes has been successefuly transmitted or -1 if something went wrong.
 		 */
-		virtual size_t write(const byte_t* buf, size_t length) = 0;
+		virtual buffer_length_t write(const byte_t* buf, buffer_length_t length) = 0;
 
 		/**
 		 * @param buf Byte buffer for placing data received.
 		 * @param buf Buffer size.
 		 * @return -1 If something went wrong.
 		 */
-		virtual size_t read(byte_t* buf, size_t length) = 0;
+		virtual buffer_length_t read(byte_t* buf, buffer_length_t length) = 0;
 
 		/**
 		 * @param obj Object to be transmitetd.
 		 * @return true if object has been transmitetd successefully.
-		 * @see write(const byte_t* buf, size_t length)
+		 * @see write(const byte_t* buf, buffer_length_t length)
 		 * @note There is not custom serialization implemented here.
 		 */
 		template<class T>
 		inline bool write(const T& obj)
-		{ return sizeof(T) == write(reinterpret_cast<const byte*_t>(&obj), sizeof(T)); }
+		{ return sizeof(T) == write(reinterpret_cast<const byte_t*>(&obj), sizeof(T)); }
 
 		/**
 		 * @param obj Target object to be read into.
 		 * @return true if object has been read successefully.
-		 * @see read(byte_t* buf, size_t length)
+		 * @see read(byte_t* buf, buffer_length_t length)
 		 * @note There is not custom serialization implemented here
 		 */
 		template<class T>
 		inline bool read(T& obj)
-		{ return sizeof(T) == read(reinterpret_cast<const byte*_t>(&obj), sizeof(T)); }
+		{ return sizeof(T) == read(reinterpret_cast<byte_t*>(&obj), sizeof(T)); }
 
 		/**
 		 * Close communication channel.
 		 * @param false if something went wrong.
 		 */
-		virtual bool close() const = 0;
+		virtual bool close() = 0;
 	};
 }
 
