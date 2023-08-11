@@ -33,3 +33,6 @@
 
 # Build dirs
 build/*
+docs/html
+docs/man
+
