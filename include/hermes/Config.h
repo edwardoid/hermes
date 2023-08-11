@@ -55,7 +55,7 @@
 
 #define HM_DBG(msg, ...)  do{ HM_LOG_WRITE("I: " ## msg ## " %s:%d\n", \
 								__VA_ARGS__, \
-								__FILE__, __LINE__);
+								__FILE__, __LINE__); \
 							} while(0)
 
 #define HM_WARN(msg, ...) do{ HM_LOG_WRITE("W: " ## msg ## "\n", \
@@ -66,10 +66,12 @@
 								__VA_ARGS__); \
 							} while(0)
 
-namespace hermes
-{
-	using size_t = uint16_t;
-	using byte_t = unsigned char;
-}
+#ifndef HERMES_SERIAL_LENGTH
+#define HERMES_SERIAL_LENGTH 8
+#endif // HERMES_SERIAL_LENGTH
+
+#ifndef HERMES_TOKEN_LENGTH
+#define HERMES_TOKEN_LENGTH 8
+#endif // HERMES_TOKEN_LENGTH
 
 #endif // HM_CONFIG_H
