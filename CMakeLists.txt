@@ -63,6 +63,25 @@ if (BUILD_TESTS)
 	target_link_libraries (${PROJECT_NAME}_test ${PROJECT_NAME})
 endif()
 
+set(DOXYGEN_GENERATE_HTML YES)
+set(DOXYGEN_GENERATE_MAN YES)
+
+find_package(Doxygen)
+
+if(${DOXYGEN_FOUND})
+
+	find_package(Doxygen
+				OPTIONAL_COMPONENTS mscgen dia)
+
+	set(DOXYGEN_OUTPUT_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/docs")
+
+	doxygen_add_docs(
+		doxygen
+		${INTERNAL_INCLUDE_DIR}
+		COMMENT "Generate documentstion pages"
+)
+endif()
+
 set(CPACK_GENERATOR "DEB")
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Eduard Sargsyan")
 include(CPack)
