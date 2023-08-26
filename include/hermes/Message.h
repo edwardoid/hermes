@@ -40,8 +40,8 @@ namespace hermes
 
     struct Message // 256 bytes
     {
-        uint8_t serial[HERMES_SERIAL_LENGTH]; // 8 by default
-        uint8_t token[HERMES_TOKEN_LENGTH];   // 8 by default
+        byte_t serial[HERMES_SERIAL_LENGTH];  // 8 by default
+        byte_t token[HERMES_TOKEN_LENGTH];    // 8 by default
         uint16_t payloadLength;               // 2
         MessageType type;                     // 1
         union Payload {
