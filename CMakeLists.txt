@@ -29,6 +29,8 @@ set(BUILD_FOR_LINUX TRUE CACHE BOOL "Are we building for a Linux host?")
 
 add_compile_definitions(HAS_STDINT_H=stdint.h)
 add_compile_definitions(HAS_STDTHREAD_H=1)
+add_compile_definitions(HM_LOG_WRITE=printf)
+add_compile_definitions(LOGGING_HEADER_H=<stdio.h>)
 
 #
 # END OF OPTIONS

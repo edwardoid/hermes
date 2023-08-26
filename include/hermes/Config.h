@@ -47,22 +47,24 @@
  */
 #ifdef HM_DISABLE_LOGGING
 #define HM_LOG_WRITE(...)
+#else
+#include LOGGING_HEADER_H
 #endif // HM_DISABLE_LOGGING
 
-#define HM_INFO(msg, ...) do{ HM_LOG_WRITE("I: " ## msg ## "\n", \
+#define HM_INFO(msg, ...) do{ HM_LOG_WRITE ("I: " msg "\n", \
 								__VA_ARGS__); \
 							} while(0)
 
-#define HM_DBG(msg, ...)  do{ HM_LOG_WRITE("I: " ## msg ## " %s:%d\n", \
+#define HM_DBG(msg, ...)  do{ HM_LOG_WRITE ("I: " msg " %s:%d\n", \
 								__VA_ARGS__, \
 								__FILE__, __LINE__); \
 							} while(0)
 
-#define HM_WARN(msg, ...) do{ HM_LOG_WRITE("W: " ## msg ## "\n", \
+#define HM_WARN(msg, ...) do{ HM_LOG_WRITE ("W: " msg "\n", \
 								__VA_ARGS__); \
 							} while(0)
 
-#define HM_ERR(msg, ...)  do{ HM_LOG_WRITE("W: " ## msg ## "\n", \
+#define HM_ERR(msg, ...)  do{ HM_LOG_WRITE ("E: " msg "\n", \
 								__VA_ARGS__); \
 							} while(0)
 
