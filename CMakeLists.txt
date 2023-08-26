@@ -28,6 +28,7 @@ option(BUILD_TESTS "Build tests" ON)
 set(BUILD_FOR_LINUX TRUE CACHE BOOL "Are we building for a Linux host?")
 
 add_compile_definitions(HAS_STDINT_H=stdint.h)
+add_compile_definitions(HAS_STDTHREAD_H=1)
 
 #
 # END OF OPTIONS
