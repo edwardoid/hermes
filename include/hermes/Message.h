@@ -38,15 +38,32 @@ namespace hermes
         Handshake = 3
     };
 
+    /**
+     * @struct Messaje object to be send between endpoints
+    */
     struct Message // 256 bytes
     {
+        /// @brief Serial number of slave
         byte_t serial[HERMES_SERIAL_LENGTH];  // 8 by default
+
+        /// @brief Authentification token
         byte_t token[HERMES_TOKEN_LENGTH];    // 8 by default
+
+        /// @brief Useful data length in the package
         uint16_t payloadLength;               // 2
+
+        /// @brief Message type
         MessageType type;                     // 1
+        
+        /// @brief Useful data in a message
         union Payload {
+            /// @brief Data in command
             CommandPayload command;
+
+            /// @brief Error info
             ErrorPayload error;
+
+            /// @brief Handshake data
             HandshakePayload handshake;
         } payload;
     } __attribute__((packed));
