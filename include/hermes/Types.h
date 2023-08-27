@@ -24,10 +24,31 @@
 #include <stdint.h>
 #endif // HAS_STDINT_H
 
+#include <memory.h>
+
 namespace hermes
 {
     using byte_t = uint8_t;
     using buffer_length_t = uint16_t;
+
+    template<int Length>
+    struct Buffer
+    {
+        inline Buffer(byte_t val = 0) { memset(data, val, Length); }
+        inline Buffer(const byte_t* val) { *this = val; }
+        inline Buffer(Buffer& src) { *this = src; }
+        inline const Buffer& operator = (const Buffer& src) { *this = src.data; return *this;}
+        inline const Buffer& operator = (const byte_t* src) { memcpy(data, src, Length); return *this; }
+        inline bool operator == (const Buffer& src) const { return *this == src.data; }
+        inline bool operator!= (const Buffer& src) const { return *this != src.data; }
+        inline bool operator == (const byte_t* src) const { return memcmp(data, src, Length) == 0; }
+        inline bool operator != (const byte_t* src) const { return !(*this == src); }
+
+        byte_t data[Length];
+    };
+
+    using token_t = Buffer<HERMES_TOKEN_LENGTH>;
+    using serial_t = Buffer<HERMES_SERIAL_LENGTH>;
 } // namespace hermes
 
 #endif // HM_TYPES+H
