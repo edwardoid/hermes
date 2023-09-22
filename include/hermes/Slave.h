@@ -19,9 +19,6 @@
 #ifndef HM_SLAVE_H
 #define HM_SLAVE_H
 
-#include <hermes/IO.h>
-#include <hermes/Message.h>
-
 namespace hermes
 {
     class Slave
