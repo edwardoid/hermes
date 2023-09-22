@@ -76,6 +76,23 @@ namespace hermes
 		virtual buffer_length_t read(byte_t* buf, buffer_length_t length) = 0;
 
 		/**
+		 * A helper function to read and write a message at once
+		 * @param write Buffer to write
+		 * @param write_length Write buffer's length
+		 * @param read Buffer to read
+		 * @param read_length Read buffer length
+		 * @note This function returns true if **both** operations succeeded
+		*/
+		virtual bool read_write(byte_t* write, buffer_length_t write_length, byte_t* read, buffer_length_t read_length)
+		{
+			if(!this->write(write, write_length))
+				return false;
+			if(available() < read_length)
+				wait(read_length);
+			return this->read(read, read_length);
+		}
+
+		/**
 		 * @param obj Object to be transmitetd.
 		 * @return true if object has been transmitetd successefully.
 		 * @see write(const byte_t* buf, buffer_length_t length)
