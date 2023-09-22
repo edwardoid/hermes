@@ -33,15 +33,7 @@ namespace hermes
          * @param serial Serial number for the slave device
          * @param token Authentification tocken
         */
-        Slave(IO* io, const byte_t* serial, const byte_t* token);
-
-        /**
-         * Perform handshake with master
-         * @return Reeturns true if handshake succeeded.
-         * @note This is an blocking method
-        */
-        bool handshake();
-        void loop();
+        Slave() = default;
 
         /**
          * @return Properties count associated with this slave.
@@ -85,20 +77,6 @@ namespace hermes
          * @param false if Fetching failed for some reason.
         */
         virtual bool get(uint8_t property, ValueData& value) = 0;
-
-        /**
-         * Process next incoming message from master.
-        */
-        bool processNextMessage();
-
-    protected:
-        bool dispatch(Message* message, Message* response);
-        bool handleCommandRequest(Message* msg, Message* response);
-
-    protected:
-        IO* m_io;
-        const byte_t m_serial[HERMES_SERIAL_LENGTH];
-        byte_t m_token[HERMES_TOKEN_LENGTH];
     };
 
 } // namespace hermes
