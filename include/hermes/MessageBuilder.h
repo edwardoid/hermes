@@ -28,9 +28,9 @@ namespace hermes
 {
     struct MessageBuilder
     {
-        static inline void setSerial(Message& msg, const uint8_t* serial) { memcpy(&msg.serial, serial, HERMES_SERIAL_LENGTH); }
+        static inline void setSerial(Message& msg, const byte_t* serial) { memcpy(&msg.serial, serial, HERMES_SERIAL_LENGTH); }
 
-        static inline void setToken(Message& msg, uint8_t* token) { memcpy(&msg.token, token, HERMES_TOKEN_LENGTH); }
+        static inline void setToken(Message& msg, const byte_t* token) { memcpy(&msg.token, token, HERMES_TOKEN_LENGTH); }
 
         static inline void setError(Message& msg, ErrorType error, const char* cause)
         {
@@ -40,7 +40,7 @@ namespace hermes
             msg.payload.error.msg[strlen(cause)] = '\0';
             msg.payloadLength = sizeof(msg.payload.error);
         }
-        static Message handshake(const uint8_t* serial, byte_t api_release, byte_t api_major, byte_t api_minor, uint8_t* token)
+        static Message handshake(const byte_t* serial, byte_t api_release, byte_t api_major, byte_t api_minor, const byte_t* token)
         {
             Message msg;
             msg.type = MessageType::Handshake;
