@@ -19,6 +19,9 @@
 #ifndef HM_SLAVE_H
 #define HM_SLAVE_H
 
+#include <hermes/Types.h>
+#include <hermes/ValueData.h>
+
 namespace hermes
 {
     class Slave
