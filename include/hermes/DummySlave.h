@@ -23,9 +23,10 @@
 #include <hermes/Slave.h>
 #include <hermes/Message.h>
 
-
 namespace hermes
 {
+    class IO;
+
     class DummySlave: public Slave
     {
     public:
