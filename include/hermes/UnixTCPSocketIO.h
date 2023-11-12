@@ -32,7 +32,7 @@ namespace hermes
     {
     public:
         UnixTCPSocketIO(int sc, int timeout = 10);
-        virtual ~UnixTCPSocketIO();
+        virtual ~UnixTCPSocketIO() = default;
         virtual buffer_length_t wait(buffer_length_t length) override;
         virtual buffer_length_t available() const override;
         virtual buffer_length_t write(const byte_t* buffer, buffer_length_t sz) override;
