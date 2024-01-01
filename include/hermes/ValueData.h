@@ -41,17 +41,16 @@ namespace hermes
 
     struct ValueData
     {
-        char name[12];  // 12
+        char name[HERMES_PROPERTY_NAME_MAX_LENGTH];
         ValueType type; // 1
         union {
             uint8_t B;  // 1
             int32_t I;  // 4
             uint32_t U; // 4
-            char S[64]; // 64
+            char S[HERMES_STRING_LENGTH];
             FloatValue F;
         } value;
     } __attribute__((packed));
-
 } // namespace hermes
 
 #endif // HM_VALUE_DATA_H

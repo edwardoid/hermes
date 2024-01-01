@@ -20,6 +20,7 @@
 #include <hermes/DummySlave.h>
 #include <hermes/MessageBuilder.h>
 #include <hermes/IO.h>
+#include <hermes/Config.h>
 #include <string.h>
 
 using namespace hermes;
@@ -56,7 +57,7 @@ void DummySlave::loop()
     bool getResult = false;
     do {
         getResult = processNextMessage();
-    } while (getResult);
+    } while (getResult && m_io->good());
 }
 
 bool DummySlave::processNextMessage()
@@ -66,15 +67,20 @@ bool DummySlave::processNextMessage()
     getResult = m_io->read(rcv);
     Message rpl;
     if (dispatch(&rcv, &rpl)) {
-        m_io->write(rpl);
+        if (m_io->good())
+            m_io->write(rpl);
+        else
+            return true;
     }
     return getResult;
 }
 
 bool DummySlave::dispatch(Message* message, Message* response)
 {
+    HM_DBG("Got request with type: %s", mt2str(message->type));
     switch (message->type) {
     case MessageType::Command: {
+        HM_DBG("Command was: %s", cmd2str(message->payload.command.command));
         return handleCommandRequest(message, response);
     }
     }
@@ -100,11 +106,14 @@ bool DummySlave::handleCommandRequest(Message* msg, Message* response)
         response->type = MessageType::Command;
         response->payload.command.command = Command::GetPropertyName;
 
-        const char* pname = propertyName(msg->payload.command.data.index);
-        if (pname != NULL) {
+        char pname[HERMES_PROPERTY_NAME_MAX_LENGTH];
+
+        if (propertyName(msg->payload.command.data.index, pname)) {
             size_t len = strlen(pname);
             memcpy(response->payload.command.data.string, pname, len);
-            response->payload.command.data.string[len] = '\0';
+            memset(response->payload.command.data.string + len, '\0', HERMES_STRING_LENGTH - len);
+            memcpy(response->payload.command.data.value.name, pname, len);
+            memset(response->payload.command.data.value.name + len, '\0', HERMES_PROPERTY_NAME_MAX_LENGTH - len);
         }
         else {
             HM_ERR("Requested property name with bad index %d", (int)msg->payload.command.data.index);
@@ -148,6 +157,11 @@ bool DummySlave::handleCommandRequest(Message* msg, Message* response)
             MessageBuilder::setError(*response, ErrorType::Unsupported, "Property does not exists");
         }
         break;
+    }
+
+    case Command::Disconnect: {
+        m_io->close();
+        return true;
     }
 
     default: {

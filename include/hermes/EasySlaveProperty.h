@@ -27,6 +27,7 @@ namespace hermes
 {
     struct SlaveProperty: public ValueData
     {
+        SlaveProperty(const char* name) { strncpy(this->name, name, strlen(name)); }
         virtual bool set(const ValueData& in) = 0;
         virtual bool get(ValueData& out) const = 0;
     };
@@ -52,11 +53,24 @@ namespace hermes
     template<typename CachedT>
     struct CachedSlaveProperty : public SlaveProperty
     {
-        CachedSlaveProperty(CachedT v = CachedT())
-            : value(v)
+        CachedSlaveProperty(const char* name, CachedT v = CachedT())
+            : SlaveProperty(name)
+            , value(v)
         {
             type = BasicType<CachedT>::type;
         }
+
+        CachedSlaveProperty(const CachedSlaveProperty& src) { *this = src; }
+
+        const CachedSlaveProperty& operator = (const CachedSlaveProperty& src)
+        {
+            type = src.type;
+            strcpy(name, src.name);
+            value = src.value;
+            return *this;
+        }
+
+        ~CachedSlaveProperty() {}
         CachedT value;
 
         virtual bool set(const ValueData& in)
@@ -107,6 +121,31 @@ namespace hermes
     }
 
     template<>
+    CachedSlaveProperty<char*>::CachedSlaveProperty(const char* name, char* val)
+        : SlaveProperty(name)
+    {
+        type = ValueType::String;
+        value = new char[HERMES_STRING_LENGTH]; 
+        strcpy(value, val);
+    }
+
+    template<>
+    const CachedSlaveProperty<char*>& CachedSlaveProperty<char*>::operator=(const CachedSlaveProperty<char*>& src)
+    {
+        type = ValueType::String;
+        strcpy(name, src.name);
+        value = new char[HERMES_STRING_LENGTH];
+        strcpy(value, src.value);
+        return *this;
+    }
+
+    template<>
+    CachedSlaveProperty<char*>::~CachedSlaveProperty()
+    {
+        delete []value;
+    }
+
+    template<>
     bool CachedSlaveProperty<char*>::set(const ValueData& in)
     {
         if (in.type != type)
@@ -120,6 +159,14 @@ namespace hermes
     bool CachedSlaveProperty<char*>::get(ValueData& out) const
     {
         strcpy(out.value.S, value);
+        return true;
+    }
+
+    template<>
+    bool CachedSlaveProperty<float>::get(ValueData& out) const
+    {
+        out.value.F.V = value * 1000;
+        out.value.F.Precision = 1000;
         return true;
     }
 

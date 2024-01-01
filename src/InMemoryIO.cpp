@@ -28,7 +28,8 @@
 
 using namespace hermes;
 
-InMemoryIO::InMemoryIO( std::vector<byte_t>& buf,
+InMemoryIO::InMemoryIO( std::vector<byte_t>& bufOut,
+                        std::vector<byte_t>& bufIn,
                         #ifdef HAS_STDTHREAD_H
                         std::mutex& mx,
                         #endif // HAS_STDTHREAD_H
@@ -37,7 +38,8 @@ InMemoryIO::InMemoryIO( std::vector<byte_t>& buf,
     #ifdef HAS_STDTHREAD_H
     , m_mx(mx)
     #endif // HAS_STDTHREAD_H
-    , m_buf(buf)
+    , m_bufOut(bufOut)
+    , m_bufIn(bufIn)
 {
 }
 
@@ -58,7 +60,7 @@ buffer_length_t InMemoryIO::available() const
     #ifdef HAS_THREAD_H
     std::lock_guard<std::mutex> lock(m_mx);
     #endif // HAS_THREAD_H
-    return static_cast<buffer_length_t>(m_buf.size());
+    return static_cast<buffer_length_t>(m_bufIn.size());
 }
 
 buffer_length_t InMemoryIO::write(const byte_t* buffer, buffer_length_t sz)
@@ -68,8 +70,8 @@ buffer_length_t InMemoryIO::write(const byte_t* buffer, buffer_length_t sz)
         #ifdef HAS_THREAD_H
         std::lock_guard<std::mutex> lock(m_mx);
         #endif // HAS_THREAD_H
-        sz = std::min(m_buf.size() + sz, m_max) - m_buf.size();
-        m_buf.insert(m_buf.end(), buffer, buffer + sz);
+        sz = std::min(m_bufOut.size() + sz, m_max) - m_bufOut.size();
+        m_bufOut.insert(m_bufOut.end(), buffer, buffer + sz);
         return sz;
     }
     return 0;
@@ -86,9 +88,9 @@ buffer_length_t InMemoryIO::read(byte_t* buffer, buffer_length_t sz)
         #ifdef HAS_THREAD_H
         std::lock_guard<std::mutex> lock(m_mx);
         #endif // HAS_THREAD_H
-        sz = std::min(static_cast<size_t>(sz), m_buf.size());
-        memcpy(buffer, m_buf.data(), sz);
-        m_buf.erase(m_buf.begin(), m_buf.begin() + sz);
+        sz = std::min(static_cast<size_t>(sz), m_bufIn.size());
+        memcpy(buffer, m_bufIn.data(), sz);
+        m_bufIn.erase(m_bufIn.begin(), m_bufIn.begin() + sz);
         return sz;
     }
     return 0;
@@ -96,10 +98,10 @@ buffer_length_t InMemoryIO::read(byte_t* buffer, buffer_length_t sz)
 
 bool InMemoryIO::good() const
 {
-    return m_buf.size() <= m_max;
+    return m_bufIn.size() <= m_max;
 }
 
 void InMemoryIO::flush()
 {
-    m_buf.clear();
+    m_bufOut.clear();
 }

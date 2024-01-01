@@ -20,6 +20,7 @@
 #ifndef HM_EASY_SLAVE_H
 #define HM_EASY_SLAVE_H
 
+#include <hermes/Config.h>
 #include <hermes/DummySlave.h>
 #include <hermes/EasySlaveProperty.h>
 
@@ -49,15 +50,16 @@ namespace hermes
         /**
          * @return Properties count associated with the slave
         */
-        inline uint8_t propertiesCount() const { return PropertiesCount; }
+        CXX_VIRTUAL uint8_t propertiesCount() CXX_OVERRIDE { return PropertiesCount; }
 
         /**
          * Get property name by index
          * @param index Property intex
-         * @return Name of property
+         * @param name Property index
+         * @return True
          * @note Here is no check if index is correct, be careful calling this function!
         */
-        inline const char* propertyName(uint8_t index) const { return m_vars[index]->name; }
+        CXX_VIRTUAL bool propertyName(uint8_t index, char* name) CXX_OVERRIDE { strcpy(name, m_vars[index]->name); return true; }
 
         /**
          * Get index of property by name.
@@ -67,7 +69,7 @@ namespace hermes
          *       usually properties count is quite a small number, lookup is not optimized
          *       and has O(n) complexity.
         */
-        int8_t propertyIndex(const char* name) const
+        CXX_VIRTUAL int8_t propertyIndex(const char* name) CXX_OVERRIDE
         {
             for (int i = 0; i < PropertiesCount; ++i) {
                 if (strcmp(m_vars[i]->name, name) == 0) {
@@ -83,7 +85,7 @@ namespace hermes
          * @param index Property index.
          * @note Here is no check if index is correct, be careful calling this function!
         */
-        ValueType propertyType(uint8_t index) const { return m_vars[index]->type; }
+        CXX_VIRTUAL ValueType propertyType(uint8_t index) CXX_OVERRIDE { return m_vars[index]->type; }
 
         /**
          * Set new value to the property
@@ -92,7 +94,7 @@ namespace hermes
          * @return true if property type is correct and value has been updated.
          * @note Here is no check if index is correct, be careful calling this function!
         */
-        bool set(uint8_t property, const ValueData& value) { return m_vars[property]->set(value); }
+        CXX_VIRTUAL bool set(uint8_t property, const ValueData& value) CXX_OVERRIDE { return m_vars[property]->set(value); }
 
         /**
          * Get current value of the property
@@ -101,7 +103,7 @@ namespace hermes
          * @return true if property value has been fetched successeful
          * @note Here is no check if index is correct, be careful calling this function!
         */
-        bool get(uint8_t property, ValueData& value) { return m_vars[property]->get(value); }
+        CXX_VIRTUAL bool get(uint8_t property, ValueData& value) CXX_OVERRIDE { return m_vars[property]->get(value); }
 
     protected:
         void setProps(SlavePropertyPtr* props) { m_vars = props; }

@@ -38,6 +38,12 @@ namespace hermes
         Handshake = 3
     };
 
+    const char* mt2str(const MessageType& type);
+
+    const char* vd2str(const ValueData& vd, char* str);
+
+    const char* vd2str(const ValueData& vd);
+
     /**
      * @struct Messaje object to be send between endpoints
     */

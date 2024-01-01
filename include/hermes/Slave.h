@@ -38,15 +38,16 @@ namespace hermes
         /**
          * @return Properties count associated with this slave.
         */
-        virtual uint8_t propertiesCount() const = 0;
+        virtual uint8_t propertiesCount() = 0;
 
         /**
          * @param index Index of property.
-         * @return Name of property number index.
+         * @param name  Name of the property
+         * @return False if operation failed.
          * @see propertiesCount()
          * @see propertyIndex()
         */
-        virtual const char* propertyName(uint8_t index) const = 0;
+        virtual bool propertyName(uint8_t index, char* name) = 0;
 
         /**
          * @param name Name of the property.
@@ -54,13 +55,13 @@ namespace hermes
          * @see propertiesCount()
          * @see propertyName()
         */
-        virtual int8_t propertyIndex(const char* name) const = 0;
+        virtual int8_t propertyIndex(const char* name) = 0;
 
         /**
          * Get value type for the property.
          * @param index Property index.
         */
-        virtual ValueType propertyType(uint8_t index) const = 0;
+        virtual ValueType propertyType(uint8_t index) = 0;
 
         /**
          * Assign new value to a property

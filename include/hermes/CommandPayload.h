@@ -25,11 +25,15 @@ namespace hermes
 {
     enum class Command : byte_t
     {
+        Disconnect = 1,
         Set = 2,
         Get = 3,
         GetPropertiesCount = 4,
-        GetPropertyName = 5
+        GetPropertyName = 5,
+        PollEvents = 6
     };
+
+    const char* cmd2str(const Command& cmd);
 
     struct CommandPayload
     {

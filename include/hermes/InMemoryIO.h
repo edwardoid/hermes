@@ -34,7 +34,8 @@ namespace hermes
     class InMemoryIO: public IO
     {
     public:
-        InMemoryIO( std::vector<byte_t>& buf,
+        InMemoryIO( std::vector<byte_t>& bufOut,
+                    std::vector<byte_t>& bufIn,
                     #ifdef HAS_STDTHREAD_H
                     std::mutex& mx,
                     #endif // HAS_STDTHREAD_H
@@ -52,7 +53,8 @@ namespace hermes
         #ifdef HAS_STDTHREAD_H
         std::mutex& m_mx;
         #endif // HAS_STDTHREAD_H
-        std::vector<byte_t>& m_buf;
+        std::vector<byte_t>& m_bufOut;
+        std::vector<byte_t>& m_bufIn;
     };
 }
 

@@ -39,16 +39,31 @@ UnixTCPSocketIO::UnixTCPSocketIO(int sc, int timeoutSeconds)
 {
     m_sfd = sc;
 
-    // int flags = fcntl(m_sfd, F_GETFL, 0);
-    // fcntl(m_sfd, F_SETFL, flags & ~O_NONBLOCK);
+    int flags = fcntl(m_sfd, F_GETFL, 0);
+    if (flags != -1)
+    {
+        if(!(fcntl(m_sfd, F_SETFL, flags & ~O_NONBLOCK) == 0))
+        {
+            m_good = false;
+            HM_WARN("Can't change socket's flags: %d", (int) errno);
+            return;
+        }
+    } else
+    {
+        m_good = false;
+        HM_WARN("Can't get socket's flags: %d", (int) errno);
+        return;
+    }
 
-    struct timeval timeout;
-    timeout.tv_sec = timeoutSeconds;
-    timeout.tv_usec = 500;
-
-    m_good = setsockopt(m_sfd, SOL_SOCKET, SO_RCVTIMEO, (char*) &timeout, sizeof(timeout)) >= 0
-             && setsockopt(m_sfd, SOL_SOCKET, SO_SNDTIMEO, (char*) &timeout, sizeof(timeout)) >= 0;
-    m_good = true;
+    struct timeval tv;
+    tv.tv_sec = 30;
+    tv.tv_usec = 0;
+    m_good = (setsockopt(m_sfd, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv, sizeof(tv)) == 0);
+    if(!m_good)
+    {
+        HM_WARN("Can't set read timeout for socket: %d", (int) errno);
+        m_good = false;
+    };
 }
 
 void UnixTCPSocketIO::flush()
@@ -56,6 +71,7 @@ void UnixTCPSocketIO::flush()
 
 bool UnixTCPSocketIO::close()
 {
+    m_good = false;
     ::close(m_sfd);
     return true;
 }
@@ -82,7 +98,12 @@ buffer_length_t UnixTCPSocketIO::wait(buffer_length_t length)
 
     int count = ::read(m_sfd, m_buffer.data() + (m_buffer.size() - remain), remain);
 
-    if (count < 0) {
+    if (count < 1)
+    {
+        HM_DBG("Read failed with: %s", strerror(errno));
+    }
+
+    if (count <= 0) {
         m_good = false;
     }
 
@@ -91,13 +112,14 @@ buffer_length_t UnixTCPSocketIO::wait(buffer_length_t length)
 
 buffer_length_t UnixTCPSocketIO::available() const
 {
-    int count;
+    int count = 0;
     if (ioctl(m_sfd, FIONREAD, &count) < 0) {
-        // m_good = false;
-        return 0;
+        m_good = false;
+        HM_WARN("ioctl failed for with %d", (int) errno);
+        count = 0;
     }
 
-    return static_cast<buffer_length_t>(count);
+    return static_cast<buffer_length_t>(count + m_buffer.size());
 }
 
 buffer_length_t UnixTCPSocketIO::write(const byte_t* buffer, buffer_length_t sz)
@@ -110,6 +132,7 @@ buffer_length_t UnixTCPSocketIO::read(byte_t* buffer, buffer_length_t sz)
 {
     if (m_buffer.size() < sz) {
         buffer_length_t remain = sz - m_buffer.size();
+        HM_DBG("Waiting for %d bytes", (int) remain);
         wait(remain);
     }
 
@@ -117,6 +140,8 @@ buffer_length_t UnixTCPSocketIO::read(byte_t* buffer, buffer_length_t sz)
     if (len > 0) {
         memcpy(buffer, m_buffer.data(), len);
         m_buffer.erase(m_buffer.begin(), m_buffer.begin() + len);
+    } else {
+        HM_WARN("Read failed with %d. Got %d bytes", (int) errno, (int)len);
     }
     return len;
 }

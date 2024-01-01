@@ -29,7 +29,8 @@ namespace hermes
         OK = 0,
         Unsupported = 1,
         AccessDenied = 2,
-        BadType = 3
+        BadType = 3,
+        Fail = 4
     };
 
     struct ErrorPayload
