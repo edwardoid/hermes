@@ -20,7 +20,7 @@
 #define HM_CONFIG_H
 
 /**
- * To verride default config device HERMES_CONFIG_OVERRIDE with a header
+ * To override default config device HERMES_CONFIG_OVERRIDE with a header
  * file containing your definitions
  */
 #ifdef HERMES_CONFIG_OVERRIDE
@@ -51,20 +51,19 @@
 #include LOGGING_HEADER_H
 #endif // HM_DISABLE_LOGGING
 
-#define HM_INFO(msg, ...) do{ HM_LOG_WRITE ("I: " msg "\n", \
+#define HM_INFO(msg, ...) do{ HM_LOG_WRITE ("I [%s:%d]\t" msg "\n", __FILE__, __LINE__, \
 								## __VA_ARGS__); \
 							} while(0)
 
-#define HM_DBG(msg, ...)  do{ HM_LOG_WRITE ("D: " msg " %s:%d\n", \
-								## __VA_ARGS__, \
-								__FILE__, __LINE__); \
-							} while(0)
-
-#define HM_WARN(msg, ...) do{ HM_LOG_WRITE ("W: " msg "\n", \
+#define HM_DBG(msg, ...)  do{ HM_LOG_WRITE ("D [%s:%d]\t" msg "\n", __FILE__, __LINE__, \
 								## __VA_ARGS__); \
 							} while(0)
 
-#define HM_ERR(msg, ...)  do{ HM_LOG_WRITE ("E: " msg "\n", \
+#define HM_WARN(msg, ...) do{ HM_LOG_WRITE ("W [%s:%d]\t" msg "\n", __FILE__, __LINE__, \
+								## __VA_ARGS__); \
+							} while(0)
+
+#define HM_ERR(msg, ...)  do{ HM_LOG_WRITE ("E [%s:%d]\t" msg "\n", __FILE__, __LINE__, \
 								## __VA_ARGS__); \
 							} while(0)
 
@@ -75,5 +74,26 @@
 #ifndef HERMES_TOKEN_LENGTH
 #define HERMES_TOKEN_LENGTH 8
 #endif // HERMES_TOKEN_LENGTH
+
+#ifndef HERMES_STRING_LENGTH
+#define HERMES_STRING_LENGTH 64
+#endif // HERMES_STRING_LENGTH
+
+#ifndef HERMES_PROPERTY_NAME_MAX_LENGTH
+#define HERMES_PROPERTY_NAME_MAX_LENGTH HERMES_STRING_LENGTH
+#endif // HERMES_PROPERTY_NAME_MAX_LENGTH
+
+#ifndef HERMES_TCP_SOCK_READ_TIMEOUT_SEC
+#define HERMES_TCP_SOCK_READ_TIMEOUT_SEC 300
+#endif // HERMES_TCP_SOCK_READ_TIMEOUT_SEC
+
+
+#ifndef CXX_VIRTUAL
+#define CXX_VIRTUAL virtual
+#endif // CXX_VIRTUAL
+
+#ifndef CXX_OVERRIDE
+#define CXX_OVERRIDE override
+#endif // CXX_OVERRIDE
 
 #endif // HM_CONFIG_H
