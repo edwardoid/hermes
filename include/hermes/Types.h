@@ -20,6 +20,8 @@
 #ifndef HM_TYPES_H
 #define HM_TYPES_H
 
+#include <hermes/Config.h>
+
 #ifdef HAS_STDINT_H
 #include <stdint.h>
 #endif // HAS_STDINT_H
