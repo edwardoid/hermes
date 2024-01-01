@@ -24,7 +24,7 @@ set(CMAKE_CXX_STANDARD 17)
 # OPTIONS
 #
 
-option(BUILD_TESTS "Build tests" ON)
+option(BUILD_EXAMPLES "Build examples" ON)
 set(BUILD_FOR_LINUX TRUE CACHE BOOL "Are we building for a Linux host?")
 
 add_compile_definitions(HAS_STDINT_H=stdint.h)
@@ -57,14 +57,6 @@ set_target_properties(${PROJECT_NAME} PROPERTIES SOVERSION 1)
 install(TARGETS ${PROJECT_NAME}
 		COMPONENT libhermes	
 		DESTINATION lib)
-
-if (BUILD_TESTS)
-	file(GLOB TEST_SOURCES "${CMAKE_CURRENT_LIST_DIR}/tests/x86/*.cpp")
-	add_executable(${PROJECT_NAME}_test ${TEST_SOURCES})
-	include_directories(${PROJECT_NAME}_test ${INTERNAL_INCLUDE_DIR})
-
-	target_link_libraries (${PROJECT_NAME}_test ${PROJECT_NAME})
-endif()
 
 set(DOXYGEN_GENERATE_HTML YES)
 set(DOXYGEN_GENERATE_MAN YES)
