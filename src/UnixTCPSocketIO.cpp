@@ -20,17 +20,13 @@
 
 #ifdef HAS_LINUX_HEADERS
 
-#include <arpa/inet.h>
 #include <chrono>
 #include <fcntl.h>
-#include <netdb.h>
-#include <netinet/in.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/ioctl.h>
 #include <sys/socket.h>
-#include <sys/types.h>
-#include <thread>
+#include <errno.h>
 #include <unistd.h>
 
 using namespace hermes;

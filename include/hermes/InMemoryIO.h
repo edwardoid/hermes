@@ -23,9 +23,9 @@
 #include <hermes/IO.h>
 #include <stddef.h>
 
-#ifdef HAS_STDTHREAD_H
+#ifdef HAS_STD_MUTEX
 #include <mutex>
-#endif // HAS_STDTHREAD_H
+#endif // HAS_STD_MUTEX
 
 #include <vector>
 
@@ -36,9 +36,9 @@ namespace hermes
     public:
         InMemoryIO( std::vector<byte_t>& bufOut,
                     std::vector<byte_t>& bufIn,
-                    #ifdef HAS_STDTHREAD_H
+                    #ifdef HAS_STD_MUTEX
                     std::mutex& mx,
-                    #endif // HAS_STDTHREAD_H
+                    #endif // HAS_STD_MUTEX
                     size_t maxSize = 1024);
         virtual ~InMemoryIO() {};
         virtual buffer_length_t wait(buffer_length_t length) override;
@@ -50,9 +50,9 @@ namespace hermes
         virtual bool close() override { return true; }
     private:
         size_t m_max;
-        #ifdef HAS_STDTHREAD_H
+        #ifdef HAS_STD_MUTEX
         std::mutex& m_mx;
-        #endif // HAS_STDTHREAD_H
+        #endif // HAS_STD_MUTEX
         std::vector<byte_t>& m_bufOut;
         std::vector<byte_t>& m_bufIn;
     };

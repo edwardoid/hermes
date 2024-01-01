@@ -19,12 +19,9 @@
 #ifndef HM_UNIX_TCP_SOCKET_IO_H
 #define HM_UNIX_TCP_SOCKET_IO_H
 
-#ifdef HAS_LINUX_HEADERS
-
 #include <hermes/IO.h>
 
 #include <vector>
-#include <mutex>
 
 namespace hermes
 {
@@ -43,12 +40,9 @@ namespace hermes
 
     private:
         int m_sfd;
-        std::mutex m_ioMx;
         mutable std::vector<byte_t> m_buffer;
         mutable bool m_good;
     };
 }
-
-#endif // HAS_LINUX_HEADERS
 
 #endif // HM_UNIX_TCP_SOCKET_IO_H

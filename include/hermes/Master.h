@@ -34,7 +34,7 @@ namespace hermes
     typedef void (*on_new_slave_fn_t)(SlaveDescriptor* slave);
 
     /**
-     * Callback for аутхентифицатион
+     * Callback for autentification
      * 
     */
     typedef bool (*authenticate_fn_t)(const serial_t& serial, token_t& token);
@@ -56,9 +56,6 @@ namespace hermes
         on_new_slave_fn_t m_new_client = nullptr;
         authenticate_fn_t m_authenticator = nullptr;
         std::list<SlaveDescriptor> m_slaves;
-        #ifdef HAS_STD_CONDITIONAL_VARIABLE
-        std::mutex m_mx;
-        #endif // HAS_STD_CONDITIONAL_VARIABLE
     };
 }
 

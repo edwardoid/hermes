@@ -23,7 +23,6 @@
 #include <hermes/IO.h>
 #include <hermes/Event.h>
 #include <hermes/Message.h>
-#include <hermes/Threading.h>
 #include <hermes/Slave.h>
 #include <vector>
 #include <list>

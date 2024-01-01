@@ -29,14 +29,13 @@ include (CheckIncludeFiles)
 
 option(BUILD_EXAMPLES "Build examples" ON)
 set(BUILD_FOR_LINUX TRUE CACHE BOOL "Are we building for a Linux host?")
-set(HAS_STD_THREADS TRUE CACHE BOOL "Are std::thread, std::mutex available?")
 
 check_include_files("thread;mutex;condition_variable" HAVE_STD_THREADING)
 
 add_compile_definitions(HAS_STDINT_H=stdint.h)
 
 if(HAVE_STD_THREADING)
-	add_compile_definitions(HAS_STDTHREAD_H=1)
+	add_compile_definitions(HAS_STD_THREAD_H=1)
 	add_compile_definitions(HAS_STD_MUTEX=1)
 	add_compile_definitions(HAS_STD_CONDITIONAL_VARIABLE=1)
 endif()
