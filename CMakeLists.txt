@@ -17,8 +17,11 @@
 
 
 cmake_minimum_required(VERSION 3.5)
-project(hermes VERSION 1.0 LANGUAGES C CXX)
+project(hermes VERSION 1.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
+enable_language(CXX)
+
+include (CheckIncludeFiles)
 
 #
 # OPTIONS
@@ -26,11 +29,18 @@ set(CMAKE_CXX_STANDARD 17)
 
 option(BUILD_EXAMPLES "Build examples" ON)
 set(BUILD_FOR_LINUX TRUE CACHE BOOL "Are we building for a Linux host?")
+set(HAS_STD_THREADS TRUE CACHE BOOL "Are std::thread, std::mutex available?")
+
+check_include_files("thread;mutex;condition_variable" HAVE_STD_THREADING)
 
 add_compile_definitions(HAS_STDINT_H=stdint.h)
-add_compile_definitions(HAS_STDTHREAD_H=1)
-add_compile_definitions(HAS_STD_MUTEX=1)
-add_compile_definitions(HAS_STD_CONDITIONAL_VARIABLE=1)
+
+if(HAVE_STD_THREADING)
+	add_compile_definitions(HAS_STDTHREAD_H=1)
+	add_compile_definitions(HAS_STD_MUTEX=1)
+	add_compile_definitions(HAS_STD_CONDITIONAL_VARIABLE=1)
+endif()
+
 add_compile_definitions(HM_LOG_WRITE=printf)
 add_compile_definitions(LOGGING_HEADER_H=<stdio.h>)
 add_compile_definitions(USE_SMART_PTRS=1)
