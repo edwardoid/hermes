@@ -29,8 +29,11 @@ set(BUILD_FOR_LINUX TRUE CACHE BOOL "Are we building for a Linux host?")
 
 add_compile_definitions(HAS_STDINT_H=stdint.h)
 add_compile_definitions(HAS_STDTHREAD_H=1)
+add_compile_definitions(HAS_STD_MUTEX=1)
+add_compile_definitions(HAS_STD_CONDITIONAL_VARIABLE=1)
 add_compile_definitions(HM_LOG_WRITE=printf)
 add_compile_definitions(LOGGING_HEADER_H=<stdio.h>)
+add_compile_definitions(USE_SMART_PTRS=1)
 
 #
 # END OF OPTIONS
@@ -57,6 +60,10 @@ set_target_properties(${PROJECT_NAME} PROPERTIES SOVERSION 1)
 install(TARGETS ${PROJECT_NAME}
 		COMPONENT libhermes	
 		DESTINATION lib)
+
+if (BUILD_EXAMPLES)
+	add_subdirectory(examples)
+endif()
 
 set(DOXYGEN_GENERATE_HTML YES)
 set(DOXYGEN_GENERATE_MAN YES)
